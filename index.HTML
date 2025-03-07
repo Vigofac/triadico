@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta Triádica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ADD8E6;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            text-align: left;
+            position: relative;
+        }
+        .question {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .hidden {
+            display: none;
+        }
+        .brain-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="cere.jpg" alt="Imagen del cerebro" class="brain-image">
+        <h2>Encuesta Triádica</h2>
+        <form id="surveyForm">
+            <div id="questionsContainer"></div>
+        </form>
+        <div id="resultsSection" class="hidden">
+            <h3>Resultados</h3>
+            <p id="logicScore"></p>
+            <p id="operationalScore"></p>
+            <p id="emotionalScore"></p>
+        </div>
+        <button onclick="showResults()">Ver Resultados</button>
+    </div>
+
+    <script>
+        const questions = [
+            "Al fin del día, de la semana o de una actividad importante, reflexiono sobre lo aprendido.",
+            "En su habitación propende por el orden, la organización y la limpieza.",
+            "Cree que su cuerpo, energía, son parte de un todo con la naturaleza.",
+            "Prefiere actividades que impliquen resolver acertijos o problemas matemáticos.",
+            "Disfruta al realizar experimentos para comprobar cómo funcionan las cosas.",
+            "Piensa que el control emocional es clave para tomar buenas decisiones.",
+            "Le gusta aprender cosas nuevas y buscar explicaciones lógicas a los problemas.",
+            "Cuando toma decisiones, prioriza la eficiencia y el resultado final.",
+            "Cree que las emociones influyen en la manera en que interactuamos con los demás.",
+            "Prefiere los juegos de estrategia que requieren planificación y lógica.",
+            "Cuando enfrenta un problema, busca entenderlo en profundidad antes de actuar.",
+            "Considera importante la expresión emocional para tener relaciones saludables.",
+            "Le gusta trabajar en proyectos que requieren creatividad y pensamiento crítico.",
+            "Disfruta de actividades prácticas donde pueda aplicar conocimientos teóricos.",
+            "Se siente cómodo expresando sus sentimientos abiertamente.",
+            "Analiza los problemas desde una perspectiva lógica antes de tomar decisiones.",
+            "Le interesan los procesos de innovación y mejora continua en cualquier área.",
+            "Cree que la empatía es fundamental para la comunicación efectiva.",
+            "Encuentra satisfacción en resolver problemas matemáticos o científicos.",
+            "Piensa que los sistemas bien estructurados hacen que todo funcione mejor.",
+            "Da prioridad a las relaciones interpersonales sobre los resultados materiales.",
+            "Disfruta la resolución de problemas abstractos y desafíos intelectuales.",
+            "Cree que la eficiencia y la optimización son esenciales para el éxito.",
+            "Siente que la inteligencia emocional es clave para el liderazgo.",
+            "Piensa en los problemas como desafíos que pueden resolverse con lógica.",
+            "Le gusta optimizar procesos y encontrar maneras de mejorar el rendimiento.",
+            "Valora la conexión emocional en las relaciones personales y profesionales."
+        ];
+        
+        const container = document.getElementById("questionsContainer");
+        questions.forEach((q, index) => {
+            const div = document.createElement("div");
+            div.className = "question";
+            div.innerHTML = `
+                <label>${index + 1}. ${q}</label><br>
+                <select name="q${index}">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            `;
+            container.appendChild(div);
+        });
+        
+        function showResults() {
+            let scores = { L: [], O: [], E: [] };
+            
+            document.querySelectorAll("select").forEach((select, index) => {
+                let type = index < 9 ? "L" : index < 18 ? "O" : "E";
+                scores[type].push(parseInt(select.value));
+            });
+            
+            let averages = {
+                L: (scores.L.reduce((a, b) => a + b, 0) / scores.L.length).toFixed(2),
+                O: (scores.O.reduce((a, b) => a + b, 0) / scores.O.length).toFixed(2),
+                E: (scores.E.reduce((a, b) => a + b, 0) / scores.E.length).toFixed(2)
+            };
+            
+            let sortedScores = Object.entries(averages).sort((a, b) => b[1] - a[1]);
+            let order = sortedScores.map(item => item[0] === "L" ? "Lógico" : item[0] === "O" ? "Operacional" : "Emocional").join(" - ");
+            
+            document.getElementById("logicScore").innerText = `Pensamiento Lógico: ${averages.L}`;
+            document.getElementById("operationalScore").innerText = `Pensamiento Operacional: ${averages.O}`;
+            document.getElementById("emotionalScore").innerText = `Pensamiento Emocional: ${averages.E}`;
+            document.getElementById("orderResult").innerText = `Orden de Pensamiento: ${order}`;
+            
+            document.getElementById("resultsSection").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
